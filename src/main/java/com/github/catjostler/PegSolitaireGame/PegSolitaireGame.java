@@ -7,12 +7,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
-
 public class PegSolitaireGame 
 {	
-	//TODO in far future: break gameboard and user interface out into their own classes
+	//TODO: break gameboard and user interface out into their own classes. Maybe.
 	//this is basically a "fill in the blanks and connect the dots" exercise - I used the skeleton provided on the project page
 	
 	/**
@@ -37,9 +34,6 @@ public class PegSolitaireGame
 				+ "2 - Circle\n"
 				+ "3 - Triangle\n"
 				+ "4 - Simple T");
-		
-		//this may not work - methods are not first-class objects?
-		
 				
 		char[][] currentBoard;
 		
@@ -50,8 +44,7 @@ public class PegSolitaireGame
 		
 		while (countMovesAvailable(currentBoard) != 0) {
 			int[] moveArray = readValidMove(scanner, currentBoard);
-			
-			
+			performMove(currentBoard, moveArray[1], moveArray[0], moveArray[2]);
 			displayBoard(currentBoard);
 		}
 		
@@ -111,6 +104,7 @@ public class PegSolitaireGame
 			Matcher matcher = validInput.matcher(userInput);
 			boolean inputIsValid = matcher.find();
 			
+			//program crashes here if I enter "r4", but not if I enter "t5"
 			if (inputIsValid && !(Integer.parseInt(userInput) < 0)) {
 				input = Integer.parseInt(userInput);
 				break;
@@ -224,7 +218,8 @@ public class PegSolitaireGame
 	 */
 	public static void displayBoard(char[][] board)
 	{
-		//initialize an array with one extra row and column apiece for numbers of same
+		//initialize an array with one extra row and two extra columns for numbers of same
+		//the second column formats the board more like the board in the examples
 		char[][] displayedBoard = new char[board.length+1][board[0].length+2];
 		
 		//and add the numbers
@@ -311,13 +306,12 @@ public class PegSolitaireGame
 		
 		column = readValidInt(in, prompts.get("pegColumnPrompt"), 1, board[0].length);
 		
-		row = readValidInt(in, prompts.get("rowColumnPrompt"), 1, board.length);
+		row = readValidInt(in, prompts.get("pegRowPrompt"), 1, board.length);
 		
 		direction = readValidInt(in, prompts.get("directionChoicePrompt"), 1, 4);
-		// TODO: IMPLEMENT THIS METHOD
 		
 		int[] moveArray = new int[] {column, row, direction};
-		
+		System.out.println(Arrays.toString(moveArray));
 		return moveArray;
 	}
 	
@@ -418,6 +412,7 @@ public class PegSolitaireGame
 	{
 		
 		if (!isValidMove(board, row, column, direction)) {
+			System.out.println("Sorry, that's not a valid move.");
 			return board; //early exit - return board unchanged if invalid move
 		}
 		
@@ -431,7 +426,6 @@ public class PegSolitaireGame
 		// - turn the jumped @ in DIRECTION into a -
 		// - turn the destination - into a @
 		
-		//best to switch by direction?
 		switch (direction) {
 			case 1: //up - row-n
 				board[adjRow][adjCol] = '-';
@@ -494,11 +488,9 @@ public class PegSolitaireGame
 	 */
 	public static int countMovesAvailable(char[][] board)
 	{
-		//can't be returned if private; you would need getter and setter
-		//grats, you don't know java
+		
 		int possibleMoves = 0;
 		
-		//remember that isValidMove() adjusts its input!!
 		for (int row = 0; row < board.length; row++) {
 			for (int column = 0; column < board[row].length; column++) {
 				for (int direction = 1; direction <= 4; direction++) {
