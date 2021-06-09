@@ -48,12 +48,6 @@ public class PegSolitaireGame
 			displayBoard(currentBoard);
 		}
 		
-		//if the user is selecting a direction, min = 1 and max = 4
-		
-		//if the user is selecting a row, min = 1 and max = currentBoard.length
-
-		//if the user is selecting a column, min = 1 and max = currentBoard[0].length
-		
 		if (countPegsRemaining(currentBoard) == 1) {
 			System.out.println("You won!");
 		}
@@ -92,19 +86,11 @@ public class PegSolitaireGame
 		while(true) {
 			userInput = in.nextLine();
 			
-			//stupid hacky workaround to see if I screwed up building a regex
-			String intRange = "";
-			for (int i = min; i <= max; i++) {
-				intRange += i;
-			}
-			
-			//String regexPattern = "[" + min + "-" + max + "]";
-			String regexPattern = "[" + intRange + "]";
+			String regexPattern = "^([" + + min + "-" + max + "]){1}$";
 			Pattern validInput = Pattern.compile(regexPattern);
 			Matcher matcher = validInput.matcher(userInput);
 			boolean inputIsValid = matcher.find();
 			
-			//program crashes here if I enter "r4", but not if I enter "t5"
 			if (inputIsValid && !(Integer.parseInt(userInput) < 0)) {
 				input = Integer.parseInt(userInput);
 				break;
